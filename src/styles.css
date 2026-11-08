@@ -1,0 +1,630 @@
+@import "tailwindcss" source("../");
+
+@plugin "tailwindcss-animate";
+
+/* ---------- themes ---------- */
+
+.t-root {
+  --t-bg: #050a06;
+  --t-panel: #0a120c;
+  --t-bar: #0f1a11;
+  --t-border: #1c3a22;
+  --t-fg: #b8f5c4;
+  --t-strong: #e6ffe9;
+  --t-muted: #5f8a68;
+  --t-accent: #39ff7a;
+  --t-accent-2: #7cf0ff;
+  --t-ok: #39ff7a;
+  --t-warn: #ffd166;
+  --t-err: #ff6b6b;
+  --t-glow: 0 0 6px rgb(57 255 122 / 0.45);
+  --t-tag-bg: rgb(57 255 122 / 0.08);
+  --t-select: rgb(57 255 122 / 0.25);
+  --t-scanlines: 0.06;
+}
+
+.t-root[data-theme='amber'] {
+  --t-bg: #0b0700;
+  --t-panel: #130c02;
+  --t-bar: #1b1204;
+  --t-border: #3d2a09;
+  --t-fg: #ffcf87;
+  --t-strong: #fff1d9;
+  --t-muted: #9a7339;
+  --t-accent: #ffb000;
+  --t-accent-2: #ff7a3d;
+  --t-ok: #ffd25e;
+  --t-warn: #ffb000;
+  --t-err: #ff6b4a;
+  --t-glow: 0 0 6px rgb(255 176 0 / 0.5);
+  --t-tag-bg: rgb(255 176 0 / 0.1);
+  --t-select: rgb(255 176 0 / 0.28);
+}
+
+.t-root[data-theme='midnight'] {
+  --t-bg: #070a14;
+  --t-panel: #0c1122;
+  --t-bar: #111830;
+  --t-border: #222d52;
+  --t-fg: #c9d4ff;
+  --t-strong: #ffffff;
+  --t-muted: #6a77a8;
+  --t-accent: #8ab4ff;
+  --t-accent-2: #f78bd6;
+  --t-ok: #7ee2b8;
+  --t-warn: #ffd580;
+  --t-err: #ff7a90;
+  --t-glow: 0 0 8px rgb(138 180 255 / 0.4);
+  --t-tag-bg: rgb(138 180 255 / 0.1);
+  --t-select: rgb(138 180 255 / 0.28);
+  --t-scanlines: 0.03;
+}
+
+.t-root[data-theme='paper'] {
+  --t-bg: #e9e4d8;
+  --t-panel: #faf7f0;
+  --t-bar: #efe9dc;
+  --t-border: #d6cdb9;
+  --t-fg: #2d2a24;
+  --t-strong: #0d0c0a;
+  --t-muted: #857c6a;
+  --t-accent: #0b6e4f;
+  --t-accent-2: #b4451f;
+  --t-ok: #0b6e4f;
+  --t-warn: #9a6700;
+  --t-err: #c0392b;
+  --t-glow: none;
+  --t-tag-bg: rgb(11 110 79 / 0.08);
+  --t-select: rgb(11 110 79 / 0.18);
+  --t-scanlines: 0;
+}
+
+/* ---------- layout ---------- */
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #050a06;
+}
+
+.t-root {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--t-fg);
+  background:
+    radial-gradient(ellipse at top, color-mix(in srgb, var(--t-accent) 7%, transparent), transparent 60%),
+    var(--t-bg);
+  min-height: 100dvh;
+  display: flex;
+  padding: clamp(0px, 3vw, 40px);
+  transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+.t-root ::selection {
+  background: var(--t-select);
+}
+
+.t-window {
+  position: relative;
+  flex: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  height: calc(100dvh - 2 * clamp(0px, 3vw, 40px));
+  display: flex;
+  flex-direction: column;
+  background: var(--t-panel);
+  border: 1px solid var(--t-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 30px 80px -20px rgb(0 0 0 / 0.6),
+    0 0 0 1px rgb(255 255 255 / 0.02) inset;
+  animation: t-boot 0.6s ease-out;
+}
+
+@media (max-width: 640px) {
+  .t-window {
+    border-radius: 0;
+    border: 0;
+  }
+}
+
+/* CRT scanlines */
+.t-window::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(0 0 0 / var(--t-scanlines)) 0px,
+    rgb(0 0 0 / var(--t-scanlines)) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 2;
+}
+
+@keyframes t-boot {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+    filter: brightness(2) blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.t-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--t-bar);
+  border-bottom: 1px solid var(--t-border);
+  font-size: 12px;
+  color: var(--t-muted);
+  user-select: none;
+}
+
+.t-dots {
+  display: flex;
+  gap: 7px;
+}
+.t-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #ff5f57;
+}
+.t-dots span:nth-child(2) {
+  background: #febc2e;
+}
+.t-dots span:nth-child(3) {
+  background: #28c840;
+}
+
+.t-title {
+  flex: 1;
+  text-align: center;
+}
+
+.t-theme-btn {
+  font: inherit;
+  color: var(--t-muted);
+  background: transparent;
+  border: 1px solid var(--t-border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.t-theme-btn:hover {
+  color: var(--t-accent);
+  border-color: var(--t-accent);
+}
+
+.t-screen {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px clamp(14px, 3vw, 28px) 24px;
+  cursor: text;
+  scrollbar-width: thin;
+  scrollbar-color: var(--t-border) transparent;
+}
+
+.t-log {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.t-block {
+  animation: t-in 0.18s ease-out;
+}
+@keyframes t-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+
+.t-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
+.t-output {
+  margin-top: 4px;
+  max-width: 78ch;
+}
+
+.t-typed {
+  color: var(--t-strong);
+  word-break: break-all;
+}
+
+/* ---------- prompt & input ---------- */
+
+.t-prompt {
+  white-space: nowrap;
+}
+.t-prompt-user {
+  color: var(--t-accent);
+  text-shadow: var(--t-glow);
+}
+.t-prompt-path {
+  color: var(--t-accent-2);
+}
+.t-prompt-alt {
+  color: var(--t-warn);
+}
+
+.t-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 12ch;
+}
+
+.t-input,
+.t-ghost {
+  font: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  width: 100%;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.t-input {
+  position: relative;
+  background: transparent;
+  color: var(--t-strong);
+  outline: none;
+  caret-color: var(--t-accent);
+  caret-shape: block;
+}
+
+.t-ghost {
+  position: absolute;
+  inset: 0;
+  color: var(--t-muted);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.t-ghost-typed {
+  visibility: hidden;
+}
+/* Touch devices only (the component decides): with no caret blinking and no keyboard up,
+   nothing else on screen says the line is typeable. Sits exactly where the text will go. */
+.t-ghost-hint {
+  font-style: italic;
+}
+/* Retire it the moment the visitor taps in. Keyed off the active element in CSS rather
+   than React state so it tracks the real focus state without a re-render on every
+   focus/blur, and without depending on focus events being delivered. */
+.t-input-wrap:has(.t-input:focus) .t-ghost-hint {
+  display: none;
+}
+
+/* ---------- output elements ---------- */
+
+.t-banner-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* Lets .t-banner size itself against the real column width via cqw units. */
+  container-type: inline-size;
+}
+
+.t-banner,
+.t-avatar {
+  margin: 0 0 8px;
+  font-family: inherit;
+  line-height: 1;
+  color: var(--t-accent);
+  text-shadow: var(--t-glow);
+  white-space: pre;
+}
+.t-banner {
+  /* The banner is a fixed-width pre, so at a flat font-size it overflows the column and
+     drags a scrollbar in with it. Instead, size it to the column: JetBrains Mono advances
+     0.6em per glyph, so cols * 0.6 * font-size == rendered width. --t-banner-cols comes
+     from the component; 0.61 leaves a hair of margin for fallback fonts and rounding. */
+  --t-banner-max: 15px;
+  font-size: clamp(7px, 1.7vw, var(--t-banner-max));
+  font-size: min(var(--t-banner-max), calc(100cqw / (var(--t-banner-cols, 84) * 0.61)));
+  /* Clip the *column*, never the rows. `overflow-x: hidden` was the original bug twice
+     over: it leaves overflow-y at `visible`, which the spec coerces to `auto`, and the
+     block glyph's ink is 1.25em tall inside a 1em line box — so five rows overrun the box
+     and that `auto` axis grew a real scrollbar, which then stole ~15px of width and
+     clipped the art's right edge. */
+  overflow: hidden;
+}
+
+/* `clip` + `visible` is the one pairing that clips one axis without coercing the other to
+   `auto`, so the art's first and last rows paint in full. Unlike the fallback above it is
+   a lone declaration a browser can drop, hence the feature query; the fallback still has
+   no scrollbar, it just shaves the end rows. */
+@supports (overflow-x: clip) {
+  .t-banner {
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+}
+
+/* Narrow columns (a phone) cannot fit 84 glyphs legibly: the solved size lands near 6px
+   and the name reads as an unreadable smear. Fall back to the initials, which need a
+   sixth of the columns and so render several times larger, and print the name beneath. */
+.t-banner-narrow,
+.t-banner-name {
+  display: none;
+}
+.t-banner-narrow {
+  --t-banner-max: 24px;
+}
+.t-banner-name {
+  color: var(--t-strong);
+  font-weight: 500;
+}
+/* Swap on the *column* width, not the viewport: the query container is .t-banner-wrap, so
+   the same rule handles a narrow window and a phone without either case guessing. */
+@container (max-width: 480px) {
+  .t-banner-wide {
+    display: none;
+  }
+  .t-banner-narrow,
+  .t-banner-name {
+    display: block;
+  }
+}
+
+.t-avatar {
+  font-size: 11px;
+  color: var(--t-accent-2);
+}
+
+.t-about {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.t-heading {
+  color: var(--t-accent-2);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.t-heading::before {
+  content: '# ';
+  color: var(--t-muted);
+}
+
+.t-muted {
+  color: var(--t-muted);
+}
+.t-accent {
+  color: var(--t-accent);
+}
+.t-strong {
+  color: var(--t-strong);
+  font-weight: 500;
+}
+.t-ok {
+  color: var(--t-ok);
+}
+.t-error {
+  color: var(--t-err);
+}
+.t-hint {
+  color: var(--t-muted);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.t-key {
+  color: var(--t-warn);
+  white-space: pre;
+  display: inline-block;
+}
+
+.t-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+
+.t-entry {
+  border-left: 2px solid var(--t-border);
+  padding-left: 12px;
+}
+
+.t-cmd {
+  font: inherit;
+  color: var(--t-accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--t-accent) 50%, transparent);
+}
+.t-cmd:hover,
+.t-cmd:focus-visible {
+  text-shadow: var(--t-glow);
+  text-decoration-style: solid;
+  outline: none;
+}
+
+.t-link {
+  color: var(--t-accent-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.t-link:hover {
+  text-shadow: var(--t-glow);
+}
+
+.t-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.t-tag {
+  font-size: 12px;
+  padding: 0 8px;
+  border: 1px solid var(--t-border);
+  background: var(--t-tag-bg);
+  border-radius: 4px;
+  color: var(--t-fg);
+}
+
+.t-ls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+}
+
+.t-help-row {
+  flex-wrap: nowrap;
+}
+.t-help-cmd {
+  display: inline-block;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .t-help-row {
+    flex-wrap: wrap;
+  }
+}
+
+.t-swatches {
+  display: flex;
+  gap: 4px;
+  margin-top: 10px;
+}
+.t-swatches span {
+  width: 22px;
+  height: 12px;
+}
+
+.t-pre {
+  margin: 0;
+  font-family: inherit;
+  color: var(--t-warn);
+}
+
+.t-md > * + * {
+  margin-top: 6px;
+}
+.t-md h2,
+.t-md h3 {
+  color: var(--t-strong);
+  font-weight: 700;
+  margin-top: 12px;
+}
+.t-md h2::before {
+  content: '## ';
+  color: var(--t-muted);
+}
+.t-md h3::before {
+  content: '### ';
+  color: var(--t-muted);
+}
+.t-md ul,
+.t-md ol {
+  padding-left: 0;
+  list-style: none;
+}
+.t-md ul li::before {
+  content: '› ';
+  color: var(--t-accent);
+}
+.t-md ol {
+  counter-reset: item;
+}
+.t-md ol li {
+  counter-increment: item;
+}
+.t-md ol li::before {
+  content: counter(item) '. ';
+  color: var(--t-accent);
+}
+.t-md strong {
+  color: var(--t-strong);
+}
+.t-md code {
+  font-family: inherit;
+  color: var(--t-warn);
+  background: var(--t-tag-bg);
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.t-md a {
+  color: var(--t-accent-2);
+  text-decoration: underline;
+}
+
+.t-article {
+  max-width: 72ch;
+}
+
+/* ---------- quick bar ---------- */
+
+.t-quickbar {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--t-border);
+  background: var(--t-bar);
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 3;
+}
+.t-quickbar button {
+  font: inherit;
+  font-size: 12px;
+  flex-shrink: 0;
+  color: var(--t-fg);
+  background: transparent;
+  border: 1px solid var(--t-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.t-quickbar button::before {
+  content: '$ ';
+  color: var(--t-muted);
+}
+.t-quickbar button:hover,
+.t-quickbar button:focus-visible {
+  color: var(--t-accent);
+  border-color: var(--t-accent);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-window,
+  .t-block {
+    animation: none;
+  }
+}
